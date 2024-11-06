@@ -1,4 +1,3 @@
-// 0,1 Knapsack
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -32,6 +31,24 @@ int memo_knapsack(int n, int capacity, vector<int> values, vector<int> weights, 
     return dp[n][capacity] = max(take, notake);
 }
 
+int tab_knapsack(int n, int capacity, vector<int> values, vector<int> weights)
+{
+    vector<vector<int>> dp(n + 1, vector<int>(capacity + 1, 0));
+
+    // Build the DP table bottom-up
+    for (int i = 1; i <= n; i++)
+    {
+        for (int w = 0; w <= capacity; w++)
+        {
+            if (weights[i - 1] <= w)
+                dp[i][w] = max(values[i - 1] + dp[i - 1][w - weights[i - 1]], dp[i - 1][w]);
+            else
+                dp[i][w] = dp[i - 1][w];
+        }
+    }
+    return dp[n][capacity];
+}
+
 int main()
 {
     vector<int> values = {1, 2, 3};
@@ -39,10 +56,12 @@ int main()
     int n = weights.size();
     int capacity = 4;
 
-    cout << "Using recurssion: " << rec_knapsack(n, capacity, values, weights) << endl;
+    cout << "Using recursion: " << rec_knapsack(n, capacity, values, weights) << endl;
 
     vector<vector<int>> dp(n + 1, vector<int>(capacity + 1, -1));
-    cout << "Using memmoziation: " << memo_knapsack(n, capacity, values, weights, dp) << endl;
+    cout << "Using memoization: " << memo_knapsack(n, capacity, values, weights, dp) << endl;
 
-    cout << "Using Tabular: " << tab_knapsack(n, capacity, values, weights) << endl;
+    cout << "Using tabulation: " << tab_knapsack(n, capacity, values, weights) << endl;
+
+    return 0;
 }
